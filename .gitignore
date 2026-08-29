@@ -216,3 +216,17 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Python environments
+venv/
+tf_venv/
+
+# Dataset
+data/
+
+# Trained models
+*.keras
+*.h5
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
