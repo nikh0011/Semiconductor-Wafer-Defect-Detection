@@ -1,8 +1,8 @@
+
 import streamlit as st
 import tensorflow as tf
 import numpy as np
 from PIL import Image
-from pathlib import Path
 
 # -----------------------------
 # Page configuration
@@ -31,20 +31,13 @@ CLASS_NAMES = [
 IMG_SIZE = (128, 128)
 
 # -----------------------------
-# Paths
-# -----------------------------
-BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR = BASE_DIR / "data" / "WM811k_Dataset"
-MODEL_PATH = BASE_DIR / "wafer_defect_cnn.keras"
-
-# -----------------------------
 # Title
 # -----------------------------
 st.title("🔬 Semiconductor Wafer Defect Detection")
 
 st.write(
-    "Select a wafer map image from the dataset "
-    "and the trained CNN model will predict the defect category."
+    "Upload a wafer map image and the trained CNN model "
+    "will predict the defect category."
 )
 
 # -----------------------------
@@ -52,96 +45,60 @@ st.write(
 # -----------------------------
 @st.cache_resource
 def load_model():
-    return tf.keras.models.load_model(MODEL_PATH)
+    return tf.keras.models.load_model("wafer_defect_cnn.keras")
 
 model = load_model()
 
 st.success("CNN model loaded successfully!")
 
 # -----------------------------
-# Get dataset images
+# Upload image
 # -----------------------------
-image_files = []
-
-for class_name in CLASS_NAMES:
-    class_dir = DATA_DIR / class_name
-
-    if class_dir.exists():
-        image_files.extend(
-            list(class_dir.glob("*.jpg")) +
-            list(class_dir.glob("*.jpeg")) +
-            list(class_dir.glob("*.png"))
-        )
+uploaded_file = st.file_uploader(
+    "Upload a wafer map image",
+    type=["jpg", "jpeg", "png"]
+)
 
 # -----------------------------
-# Image selection
+# Prediction
 # -----------------------------
-if len(image_files) == 0:
+if uploaded_file is not None:
 
-    st.error("No dataset images found.")
-
-else:
-
-    selected_image = st.selectbox(
-        "Select a wafer map image",
-        image_files,
-        format_func=lambda x: str(x.relative_to(DATA_DIR))
-    )
-
-    # -----------------------------
-    # Load selected image
-    # -----------------------------
-    image = Image.open(selected_image).convert("RGB")
+    image = Image.open(uploaded_file).convert("RGB")
 
     st.image(
         image,
-        caption=f"Selected Image: {selected_image.name}",
+        caption="Uploaded Wafer Map",
         use_container_width=True
     )
 
-    # -----------------------------
-    # Prediction button
-    # -----------------------------
-    if st.button("🔍 Predict Defect"):
+    # Resize
+    resized_image = image.resize(IMG_SIZE)
 
-        resized_image = image.resize(IMG_SIZE)
+    # Normalize
+    image_array = np.array(resized_image).astype("float32") / 255.0
 
-        image_array = np.array(resized_image).astype("float32") / 255.0
+    # Add batch dimension
+    image_array = np.expand_dims(image_array, axis=0)
 
-        image_array = np.expand_dims(
-            image_array,
-            axis=0
-        )
+    # Prediction
+    predictions = model.predict(image_array, verbose=0)
 
-        predictions = model.predict(
-            image_array,
-            verbose=0
-        )
+    predicted_index = np.argmax(predictions[0])
+    predicted_class = CLASS_NAMES[predicted_index]
+    confidence = predictions[0][predicted_index] * 100
 
-        predicted_index = int(np.argmax(predictions[0]))
+    # Results
+    st.success(f"Predicted Defect: {predicted_class}")
 
-        predicted_class = CLASS_NAMES[predicted_index]
+    st.info(f"Confidence: {confidence:.2f}%")
 
-        confidence = float(
-            predictions[0][predicted_index] * 100
-        )
+    # Probabilities
+    st.subheader("Prediction Probabilities")
 
-        st.success(
-            f"Predicted Defect: {predicted_class}"
-        )
+    probabilities = {
+        CLASS_NAMES[i]: float(predictions[0][i] * 100)
+        for i in range(len(CLASS_NAMES))
+    }
 
-        st.info(
-            f"Confidence: {confidence:.2f}%"
-        )
-
-        # -----------------------------
-        # Prediction probabilities
-        # -----------------------------
-        st.subheader("Prediction Probabilities")
-
-        probabilities = {
-            CLASS_NAMES[i]: float(predictions[0][i] * 100)
-            for i in range(len(CLASS_NAMES))
-        }
-
-        st.bar_chart(probabilities)
+    st.bar_chart(probabilities)
