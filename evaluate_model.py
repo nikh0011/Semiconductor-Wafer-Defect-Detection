@@ -74,5 +74,3 @@ print(
 print("\nConfusion Matrix:\n")
 
 print(confusion_matrix(y_true, y_pred))
-PY
-cat > evaluate_model.py
