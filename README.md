@@ -30,3 +30,10 @@ The trained CNN model was evaluated on a test set containing 902 wafer map image
 The model achieved **91.57% test accuracy** across the 902-image test set.
 
 > Note: Prediction confidence for an individual image is different from overall test accuracy.
+
+
+## 📸 Demo
+
+### Streamlit Prediction
+
+![Streamlit Prediction Result](streamlit_prediction_result.png)
