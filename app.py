@@ -23,9 +23,9 @@ CLASS_NAMES = [
     "Edge Ring",
     "Local",
     "Scratch",
-    "near full",
-    "none",
-    "random"
+    "Near Full",
+    "None",
+    "Random"
 ]
 
 IMG_SIZE = (128, 128)
