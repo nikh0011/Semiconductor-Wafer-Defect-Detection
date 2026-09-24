@@ -2,12 +2,12 @@
 
 A CNN-based computer vision project for classifying semiconductor wafer map defects into 9 categories.
 
-## 🚀 Live Demo
+## Live Demo
 
 Streamlit App:
 https://semiconductor-wafer-defect-detection-59spnhwdxw9b2wkvwbmrz9.streamlit.app/
 
-## ✨ Features
+## Features
 
 - CNN-based wafer defect classification
 - 9 defect categories
@@ -17,7 +17,7 @@ https://semiconductor-wafer-defect-detection-59spnhwdxw9b2wkvwbmrz9.streamlit.ap
 - Real-time image upload and prediction
 - Prediction confidence and class probabilities
 
-## 🔬 Defect Classes
+## Defect Classes
 
 The model classifies wafer maps into 9 defect categories:
 
@@ -31,11 +31,11 @@ The model classifies wafer maps into 9 defect categories:
 8. None
 9. Random
 
-## 📊 Dataset
+## Dataset
 
 The project uses the WM811K wafer map dataset for training and evaluation.
 
-## 🧠 CNN Methodology
+## CNN Methodology
 
 ```text
 Wafer Map Image
@@ -53,7 +53,7 @@ Classification Layer
 9 Defect Classes
        ↓
 Prediction + Confidence
-## 📈 Model Evaluation & Results
+## Model Evaluation & Results
 
 The trained CNN model was evaluated on a test set containing 902 wafer map images.
 
@@ -84,9 +84,6 @@ The model achieved **91.57% test accuracy** across the 902-image test set.
 
 > Note: Prediction confidence for an individual image is different from overall test accuracy.
 
-
-## 📸 Demo
-## 🛠️ Installation
 
 Clone the repository and install the required dependencies:
 
